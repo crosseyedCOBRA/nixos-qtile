@@ -19,22 +19,12 @@
 
     displayManager.lightdm.enable = true;
 
-    windowManager.qtile = {
-      enable = true;
-    };
+    windowManager.bspwm.enable = true;
   };
-
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
-
-  hardware.graphics.enable = true;
 
   users.users.mike = {
     isNormalUser = true;
     description = "Mike";
-
     extraGroups = [
       "wheel"
       "networkmanager"

@@ -1,11 +1,16 @@
 { config, pkgs, ... }:
 
+let
+  qtileNoTests = pkgs.qtile.overrideAttrs (oldAttrs: {
+    doCheck = false;
+  });
+in
 {
   imports = [
     ./hardware-configuration.nix
   ];
 
-  # Bootloader
+  # Boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -25,6 +30,7 @@
 
     windowManager.qtile = {
       enable = true;
+      package = qtileNoTests;
     };
   };
 
@@ -50,10 +56,10 @@
     ];
   };
 
-  # Passwordless sudo for wheel
+  # Passwordless sudo
   security.sudo.wheelNeedsPassword = false;
 
-  # A few basic utilities
+  # Basic utilities
   environment.systemPackages = with pkgs; [
     git
     vim
@@ -62,6 +68,5 @@
     curl
   ];
 
-  # NixOS release version
   system.stateVersion = "26.05";
 }

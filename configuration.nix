@@ -5,16 +5,19 @@
     ./hardware-configuration.nix
   ];
 
+  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Networking
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
+  # Time / locale
   time.timeZone = "America/New_York";
-
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # X11 + LightDM + Qtile
   services.xserver = {
     enable = true;
 
@@ -22,23 +25,23 @@
 
     windowManager.qtile = {
       enable = true;
-      extraPackages = python3Packages: with python3Packages; [
-        xcffib
-        cairocffi
-      ];
     };
   };
 
+  # PipeWire
   services.pipewire = {
     enable = true;
     pulse.enable = true;
   };
 
+  # Graphics
   hardware.graphics.enable = true;
 
+  # User
   users.users.mike = {
     isNormalUser = true;
     description = "Mike";
+
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -47,20 +50,18 @@
     ];
   };
 
+  # Passwordless sudo for wheel
   security.sudo.wheelNeedsPassword = false;
 
+  # A few basic utilities
   environment.systemPackages = with pkgs; [
     git
     vim
     nano
     wget
     curl
-    alacritty
-    rofi
-    dunst
-    picom
-    thunar
   ];
 
-  system.stateVersion = "25.11";
+  # NixOS release version
+  system.stateVersion = "26.05";
 }

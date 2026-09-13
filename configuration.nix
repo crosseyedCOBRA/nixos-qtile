@@ -1,60 +1,66 @@
 { config, pkgs, ... }:
 
 {
-  # Enable the X11 windowing system
-  services.xserver.enable = true;
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
-  # Enable LightDM display manager
-  services.xserver.displayManager.lightdm.enable = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  # Enable Qtile Window Manager (X11)
-  services.xserver.windowManager.qtile = {
+  networking.hostName = "nixos";
+  networking.networkmanager.enable = true;
+
+  time.timeZone = "America/New_York";
+
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  services.xserver = {
     enable = true;
-    extraPackages = python3Packages: with python3Packages; [
-      qtile-extras
+
+    displayManager.lightdm.enable = true;
+
+    windowManager.qtile = {
+      enable = true;
+      extraPackages = python3Packages: with python3Packages; [
+        xcffib
+        cairocffi
+      ];
+    };
+  };
+
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
+
+  hardware.graphics.enable = true;
+
+  users.users.mike = {
+    isNormalUser = true;
+    description = "Mike";
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "video"
+      "audio"
     ];
   };
 
-  # Disable PulseAudio (required for PipeWire to take over)
-  hardware.pulseaudio.enable = false;
-  
-  # Enable PipeWire Sound Service
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
+  security.sudo.wheelNeedsPassword = false;
 
-  # Enable Flatpak support
-  services.flatpak.enable = true;
-
-  # Desktop Portals (Required for Flatpak features)
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    config.common.default = "*";
-  };
-
-  # Essential utilities and tools
   environment.systemPackages = with pkgs; [
-    alacritty             # Terminal emulator
-    rofi                  # Menu/Launcher
-    picom                 # Compositor
-    feh                   # Wallpaper tool option 1
-    xwallpaper            # Wallpaper tool option 2
-    xlibre                # Pre-installing xlibre headers/tools
     git
     vim
-    pavucontrol           # GUI volume control for PipeWire/Pulse
+    nano
+    wget
+    curl
+    alacritty
+    rofi
+    dunst
+    picom
+    thunar
   ];
 
-  # System fonts
-  fonts.packages = with pkgs; [
-    nerdfonts
-    noto-fonts
-    noto-fonts-emoji
-  ];
+  system.stateVersion = "25.11";
 }

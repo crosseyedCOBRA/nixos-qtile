@@ -1,0 +1,35 @@
+# Terminal
+super + Return
+    alacritty
+
+# Application launcher
+super + d
+    rofi -show drun
+
+# Close window
+super + q
+    bspc node -c
+
+# Reload bspwm
+super + alt + r
+    bspc wm -r
+
+# Quit bspwm
+super + alt + q
+    bspc quit
+
+# Focus windows
+super + {h,j,k,l}
+    bspc node -f {west,south,north,east}
+
+# Move windows
+super + shift + {h,j,k,l}
+    bspc node -s {west,south,north,east}
+
+# Switch desktops
+super + {1-9,0}
+    bspc desktop -f '^{1-9,10}'
+
+# Send window to desktop
+super + shift + {1-9,0}
+    bspc node -d '^{1-9,10}'
